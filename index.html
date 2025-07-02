@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jixdeas | Scripting, Building & UI/UX Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00ffcc;
+      --accent: #ff00cc;
+      --bg: #0f0f0f;
+      --bg-dark: #1a1a1a;
+      --card: #181818;
+      --border: #222;
+      --text: #e5e5e5;
+      --text-light: #ccc;
+      --shadow: 0 4px 32px rgba(0,0,0,0.6);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg), var(--bg-dark));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--card);
+      padding: 28px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 2px;
+      transition: color 0.3s;
+    }
+    .logo:hover { color: var(--accent); }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      margin-left: 40px;
+      font-weight: 600;
+      font-size: 1.15rem;
+      transition: color 0.3s;
+      position: relative;
+    }
+    nav a::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s;
+      position: absolute;
+      bottom: -4px; left: 0;
+    }
+    nav a:hover { color: var(--primary); }
+    nav a:hover::after { width: 100%; }
+    main {
+      flex: 1;
+      padding: 70px 24px 40px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 70px;
+      animation: fadeInUp 1.2s cubic-bezier(.5,1.5,.5,1) forwards;
+      opacity: 0;
+    }
+    .hero h1 {
+      font-size: 3.8rem;
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+    .hero p {
+      font-size: 1.4rem;
+      color: var(--text-light);
+      margin-bottom: 36px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #000;
+      padding: 15px 40px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.15rem;
+      text-decoration: none;
+      box-shadow: 0 2px 16px rgba(0,255,204,0.1);
+      transition: background 0.3s, transform 0.2s;
+      margin: 0 12px;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transform: translateY(-3px) scale(1.03);
+    }
+    section {
+      margin-bottom: 70px;
+      animation: fadeInUp 1.2s cubic-bezier(.5,1.5,.5,1) forwards;
+      opacity: 0;
+    }
+    section.visible { opacity: 1; }
+    h2 {
+      color: var(--accent);
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .skills-list, .projects-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 36px;
+      justify-content: center;
+    }
+    .skill-card, .project-card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 36px 30px;
+      min-width: 260px;
+      max-width: 370px;
+      flex: 1 1 320px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card:hover, .project-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 8px 40px rgba(0,255,204,0.10);
+      border-color: var(--primary);
+    }
+    .skill-icon {
+      font-size: 2.9rem;
+      margin-bottom: 18px;
+      color: var(--primary);
+      display: block;
+    }
+    .skill-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .skill-desc {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    .project-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--primary);
+    }
+    .project-desc {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .tag {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      margin-right: 4px;
+    }
+    .project-links {
+      margin-top: 8px;
+    }
+    .project-link {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-right: 12px;
+      transition: color 0.3s;
+    }
+    .project-link:hover { color: var(--accent); }
+    .timeline {
+      border-left: 3px solid var(--primary);
+      margin: 0 auto;
+      max-width: 750px;
+      padding-left: 36px;
+      position: relative;
+    }
+    .timeline-event {
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .timeline-event:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -21px;
+      top: 5px;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 4px var(--primary);
+    }
+    .timeline-title {
+      font-size: 1.13rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .timeline-date {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .timeline-desc {
+      font-size: 1.05rem;
+      color: var(--text-light);
+      margin-bottom: 0;
+    }
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 36px 26px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-form input, .contact-form textarea {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #222;
+      color: var(--text);
+      outline: none;
+      transition: border 0.2s;
+      resize: none;
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      border: 1.5px solid var(--primary);
+    }
+    .contact-form button {
+      align-self: flex-end;
+      min-width: 130px;
+    }
+    footer {
+      background: var(--card);
+      padding: 24px;
+      text-align: center;
+      color: #666;
+      font-size: 15px;
+      border-top: 1px solid var(--border);
+      letter-spacing: 1px;
+    }
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(32px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .skills-list, .projects-list { flex-direction: column; align-items: center; }
+      .skill-card, .project-card { max-width: 95vw; }
+    }
+    @media (max-width: 600px) {
+      header { flex-direction: column; padding: 18px 8px; }
+      nav a { margin-left: 16px; font-size: 1rem; }
+      .hero h1 { font-size: 2.1rem; }
+      h2 { font-size: 1.3rem; }
+      main { padding: 32px 4px 18px 4px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Jixdeas</div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" style="animation-delay:0s;">
+      <h1>Hi, I'm Jixdeas.<br> Scripting, Building & UI/UX Specialist</h1>
+      <p>
+        Welcome to my portfolio. I am a creative developer with <b>extensive experience in scripting, game building, and modern UI/UX design</b>. My focus is on crafting efficient solutions, intuitive interfaces, and innovative projects—from games to web apps.
+      </p>
+      <a href="#contact" class="btn">Contact Me</a>
+      <a href="https://github.com/" target="_blank" class="btn">My GitHub</a>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" style="animation-delay:0.2s;">
+      <h2>About Me</h2>
+      <p style="max-width:700px;margin:0 auto 32px auto; text-align:center;">
+        I have been developing scripts, GUIs, and digital experiences for several years. My specialty is the <b>combination of scripting, building, and UI/UX design</b>—whether for games, tools, or web projects.<br><br>
+        My passion: <b>making complex systems simple and beautiful</b>. I am detail-oriented, solution-driven, and always aim to delight users.<br><br>
+        <b>Notable Projects:</b> <span style="color:var(--primary);">Sealand Armed Forces, Guess the Logo, Critical Tower Defense</span>
+      </p>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" style="animation-delay:0.4s;">
+      <h2>My Skills</h2>
+      <div class="skills-list">
+        <div class="skill-card">
+          <span class="skill-icon">💻</span>
+          <div class="skill-title">Scripting</div>
+          <div class="skill-desc">
+            <ul>
+              <li>JavaScript, TypeScript, Lua, Python</li>
+              <li>Roblox Lua, Node.js, Web APIs</li>
+              <li>Game and tool scripting</li>
+              <li>Automation & backend logic</li>
+            </ul>
+          </div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🏗️</span>
+          <div class="skill-title">Building</div>
+          <div class="skill-desc">
+            <ul>
+              <li>Level & map design (Roblox, Unity, Minecraft)</li>
+              <li>Structured workflows & asset management</li>
+              <li>Performance & gameplay optimization</li>
+            </ul>
+          </div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🎨</span>
+          <div class="skill-title">UI/UX & GUI Design</div>
+          <div class="skill-desc">
+            <ul>
+              <li>Modern, responsive design</li>
+              <li>Figma, Photoshop, Roblox GUI</li>
+              <li>Usability testing & prototyping</li>
+              <li>Design systems & branding</li>
+            </ul>
+          </div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🚀</span>
+          <div class="skill-title">Other Strengths</div>
+          <div class="skill-desc">
+            <ul>
+              <li>Teamwork & project management</li>
+              <li>Documentation & tutorials</li>
+              <li>Agile methods & versioning (Git)</li>
+              <li>Community moderation & support</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" style="animation-delay:0.6s;">
+      <h2>Featured Projects</h2>
+      <div class="projects-list">
+        <div class="project-card">
+          <div class="project-title">Sealand Armed Forces</div>
+          <div class="project-desc">
+            A Roblox military simulation game where I led scripting and UI/UX. Developed advanced systems for team management, custom GUIs, and immersive gameplay mechanics.
+          </div>
+          <div class="project-tags">
+            <span class="tag">Roblox</span>
+            <span class="tag">Lua</span>
+            <span class="tag">UI/UX</span>
+            <span class="tag">Game Design</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Game Page</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">Guess the Logo</div>
+          <div class="project-desc">
+            A game challenging players to recognize brands. I designed the UI, coded the core logic, and implemented smooth transitions and accessibility features.
+          </div>
+          <div class="project-tags">
+            <span class="tag">UI/UX</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Game Logic</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Play Online</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">Critical Tower Defense</div>
+          <div class="project-desc">
+            A strategic tower defense game with custom scripting for enemy AI, level progression, and a modular UI system. My role included scripting, building, and UX optimization.
+          </div>
+          <div class="project-tags">
+            <span class="tag">Roblox</span>
+            <span class="tag">Lua</span>
+            <span class="tag">Game Dev</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Game Info</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">UI/UX Dashboard Template</div>
+          <div class="project-desc">
+            A modern, responsive dashboard template focused on usability and clean design. Ideal for web apps and game GUIs.
+          </div>
+          <div class="project-tags">
+            <span class="tag">UI/UX</span>
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">Figma</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Figma</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section id="timeline" style="animation-delay:0.8s;">
+      <h2>My Journey</h2>
+      <div class="timeline">
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2021 – Roblox Scripting Beginnings</div>
+          <div class="timeline-date">Roblox Studio</div>
+          <div class="timeline-desc">
+            First scripts, custom minigames, and early GUI design experiments.
+          </div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2022 – Building & Game Development</div>
+          <div class="timeline-date">Roblox, Unity</div>
+          <div class="timeline-desc">
+            Complex maps, 3D assets, and first community projects.
+          </div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2023 – UI/UX Specialization</div>
+          <div class="timeline-date">Figma, Web, Roblox</div>
+          <div class="timeline-desc">
+            Focus on user-friendly interfaces and design systems.
+          </div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2024 – Open Source & Community</div>
+          <div class="timeline-date">GitHub, Discord</div>
+          <div class="timeline-desc">
+            Released tools, tutorials, and provided active support for other developers.
+          </div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2025 – Advanced Game Projects</div>
+          <div class="timeline-date">Roblox, Web</div>
+          <div class="timeline-desc">
+            Led scripting and design for Sealand Armed Forces, Guess the Logo, and Critical Tower Defense.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" style="animation-delay:1s;">
+      <h2>Contact</h2>
+      <form class="contact-form" autocomplete="off" onsubmit="alert('Thank you for your message!');return false;">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
+        <button type="submit" class="btn">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Jixdeas. All rights reserved. | <a href="mailto:contact@jixdeas.dev" style="color:#00ffcc;text-decoration:underline;">contact@jixdeas.dev</a>
+  </footer>
+  <script>
+    // Animate sections on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('section');
+      sections.forEach((section, i) => {
+        setTimeout(() => section.classList.add('visible'), 200 + i * 200);
+      });
+    });
+  </script>
+</body>
+</html>
