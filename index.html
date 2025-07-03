@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toxic | Scripting, Building & UI/UX Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00ffcc;
+      --accent: #ff00cc;
+      --bg: #0f0f0f;
+      --bg-dark: #1a1a1a;
+      --card: #181818;
+      --border: #222;
+      --text: #e5e5e5;
+      --text-light: #ccc;
+      --shadow: 0 4px 32px rgba(0,0,0,0.6);
+      --success: #21e57a;
+      --danger: #ff5555;
+      --info: #0099ff;
+      --warning: #ffcc00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg), var(--bg-dark));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.4s;
+    }
+    header {
+      background: var(--card);
+      padding: 28px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 2px;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+    .logo:hover { color: var(--accent); }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      margin-left: 40px;
+      font-weight: 600;
+      font-size: 1.15rem;
+      transition: color 0.3s;
+      position: relative;
+    }
+    nav a::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s;
+      position: absolute;
+      bottom: -4px; left: 0;
+    }
+    nav a:hover { color: var(--primary); }
+    nav a:hover::after { width: 100%; }
+    .theme-toggle {
+      margin-left: 40px;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .theme-toggle:hover { color: var(--primary); }
+    main {
+      flex: 1;
+      padding: 70px 24px 40px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    section {
+      margin-bottom: 70px;
+      animation: fadeInUp 1.2s cubic-bezier(.5,1.5,.5,1) forwards;
+      opacity: 0;
+    }
+    section.visible { opacity: 1; }
+    h2 {
+      color: var(--accent);
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 70px;
+      animation-delay: 0s;
+    }
+    .hero h1 {
+      font-size: 3.8rem;
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+    .hero p {
+      font-size: 1.4rem;
+      color: var(--text-light);
+      margin-bottom: 36px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #000;
+      padding: 15px 40px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.15rem;
+      text-decoration: none;
+      box-shadow: 0 2px 16px rgba(0,255,204,0.1);
+      transition: background 0.3s, transform 0.2s;
+      margin: 0 12px;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transform: translateY(-3px) scale(1.03);
+    }
+    .btn.secondary {
+      background: none;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    .btn.secondary:hover {
+      background: var(--primary);
+      color: #000;
+    }
+    .skills-list, .projects-list, .testimonial-list, .blog-list, .service-list, .faq-list, .awards-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 36px;
+      justify-content: center;
+    }
+    .skill-card, .project-card, .testimonial-card, .blog-card, .service-card, .faq-card, .award-card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 36px 30px;
+      min-width: 260px;
+      max-width: 370px;
+      flex: 1 1 320px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card:hover, .project-card:hover, .testimonial-card:hover, .blog-card:hover, .service-card:hover, .faq-card:hover, .award-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 8px 40px rgba(0,255,204,0.10);
+      border-color: var(--primary);
+    }
+    .skill-icon, .service-icon, .award-icon {
+      font-size: 2.9rem;
+      margin-bottom: 18px;
+      color: var(--primary);
+      display: block;
+    }
+    .skill-title, .service-title, .award-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .skill-desc, .service-desc, .award-desc {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    .project-title, .blog-title, .faq-question {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--primary);
+    }
+    .project-desc, .blog-desc, .faq-answer {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+    .project-tags, .blog-tags, .service-tags, .award-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .tag {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      margin-right: 4px;
+    }
+    .project-links, .blog-links, .service-links, .award-links {
+      margin-top: 8px;
+    }
+    .project-link, .blog-link, .service-link, .award-link {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-right: 12px;
+      transition: color 0.3s;
+    }
+    .project-link:hover, .blog-link:hover, .service-link:hover, .award-link:hover { color: var(--accent); }
+    .timeline {
+      border-left: 3px solid var(--primary);
+      margin: 0 auto;
+      max-width: 750px;
+      padding-left: 36px;
+      position: relative;
+    }
+    .timeline-event {
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .timeline-event:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -21px;
+      top: 5px;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 4px var(--primary);
+    }
+    .timeline-title {
+      font-size: 1.13rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .timeline-date {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .timeline-desc {
+      font-size: 1.05rem;
+      color: var(--text-light);
+      margin-bottom: 0;
+    }
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 36px 26px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-form input, .contact-form textarea {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #222;
+      color: var(--text);
+      outline: none;
+      transition: border 0.2s;
+      resize: none;
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      border: 1.5px solid var(--primary);
+    }
+    .contact-form button {
+      align-self: flex-end;
+      min-width: 130px;
+    }
+    .newsletter-form {
+      max-width: 400px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .newsletter-form input[type="email"] {
+      flex: 1;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #222;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .newsletter-form input[type="email"]:focus {
+      border: 1.5px solid var(--primary);
+    }
+    .newsletter-form button {
+      padding: 13px 24px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .newsletter-form button:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    .social-links {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin: 24px 0;
+    }
+    .social-link {
+      color: var(--primary);
+      font-size: 2rem;
+      transition: color 0.3s;
+      text-decoration: none;
+    }
+    .social-link:hover { color: var(--accent); }
+    footer {
+      background: var(--card);
+      padding: 24px;
+      text-align: center;
+      color: #666;
+      font-size: 15px;
+      border-top: 1px solid var(--border);
+      letter-spacing: 1px;
+    }
+    .footer-nav {
+      margin-top: 12px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .footer-nav a {
+      color: var(--primary);
+      text-decoration: underline;
+      transition: color 0.3s;
+    }
+    .footer-nav a:hover { color: var(--accent); }
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(32px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    /* Responsive */
+    @media (max-width: 1200px) {
+      main { max-width: 98vw; }
+    }
+    @media (max-width: 900px) {
+      .skills-list, .projects-list, .testimonial-list, .blog-list, .service-list, .faq-list, .awards-list {
+        flex-direction: column;
+        align-items: center;
+      }
+      .skill-card, .project-card, .testimonial-card, .blog-card, .service-card, .faq-card, .award-card {
+        max-width: 95vw;
+      }
+      header { flex-direction: column; padding: 18px 8px; }
+      nav a, .theme-toggle { margin-left: 16px; font-size: 1rem; }
+    }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2.1rem; }
+      h2 { font-size: 1.3rem; }
+      main { padding: 32px 4px 18px 4px; }
+      .btn { font-size: 1rem; padding: 10px 20px; }
+    }
+    /* Dark/Light Theme */
+    body.light-theme {
+      --bg: #f0f0f0;
+      --bg-dark: #e0e0e0;
+      --card: #fff;
+      --border: #ccc;
+      --text: #222;
+      --text-light: #555;
+      --primary: #0077cc;
+      --accent: #cc0077;
+      --shadow: 0 4px 32px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, var(--bg), var(--bg-dark));
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" tabindex="0">Toxic</div>
+    <nav aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#blog">Blog</a>
+      <a href="#services">Services</a>
+      <a href="#awards">Awards</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+  </header>
+  <main>
+    <!-- HERO -->
+    <section class="hero" style="animation-delay:0s;">
+      <h1>Hi, I'm Toxic.<br> Scripting, Building & UI/UX Specialist</h1>
+      <p>
+        Welcome to my portfolio. I am a creative developer with <b>extensive experience in scripting, game building, and modern UI/UX design</b>. My focus is on crafting efficient solutions, intuitive interfaces, and innovative projects—from games to web apps.
+      </p>
+      <a href="#contact" class="btn">Contact Me</a>
+      <a href="https://github.com/" target="_blank" class="btn">My GitHub</a>
+      <div class="social-links" aria-label="Social Media">
+        <a href="#" class="social-link" aria-label="Twitter" title="Twitter">🐦</a>
+        <a href="#" class="social-link" aria-label="LinkedIn" title="LinkedIn">💼</a>
+        <a href="#" class="social-link" aria-label="Discord" title="Discord">💬</a>
+        <a href="#" class="social-link" aria-label="YouTube" title="YouTube">▶️</a>
+      </div>
+      <form class="newsletter-form" autocomplete="off" onsubmit="newsletterSignup(event)">
+        <input type="email" name="newsletter" placeholder="Your Email for Newsletter" required aria-label="Newsletter Email">
+        <button type="submit">Subscribe</button>
+      </form>
+      <div id="newsletter-message" style="text-align:center;margin-top:8px;"></div>
+    </section>
+    <!-- ABOUT -->
+    <section id="about" style="animation-delay:0.2s;">
+      <h2>About Me</h2>
+      <p style="max-width:700px;margin:0 auto 32px auto; text-align:center;">
+        I have been developing scripts, GUIs, and digital experiences for several years. My specialty is the <b>combination of scripting, building, and UI/UX design</b>—whether for games, tools, or web projects.<br><br>
+        My passion: <b>making complex systems simple and beautiful</b>. I am detail-oriented, solution-driven, and always aim to delight users.<br><br>
+        <b>Notable Projects:</b> <span style="color:var(--primary);">Sealand Armed Forces, Guess the Logo, Critical Tower Defense</span>
+      </p>
+      <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;">
+        <div style="max-width:320px;">
+          <h3 style="color:var(--primary);margin-bottom:8px;">Mission</h3>
+          <p style="color:var(--text-light);">To empower users and teams with digital solutions that are both powerful and a joy to use.</p>
+        </div>
+        <div style="max-width:320px;">
+          <h3 style="color:var(--primary);margin-bottom:8px;">Values</h3>
+          <ul style="color:var(--text-light);line-height:1.6;">
+            <li>Creativity & Innovation</li>
+            <li>User-Centric Design</li>
+            <li>Continuous Learning</li>
+            <li>Collaboration</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <!-- SKILLS -->
+    <section id="skills" style="animation-delay:0.4s;">
+      <h2>My Skills</h2>
+      <div class="skills-list">
+        <div class="skill-card">
+          <span class="skill-icon">💻</span>
+          <div class="skill-title">Scripting</div>
+          <div class="skill-desc">
+            <ul>
+              <li>JavaScript, TypeScript, Lua, Python</li>
+              <li>Roblox Lua, Node.js, Web APIs</li>
+              <li>Game and tool scripting</li>
+              <li>Automation & backend logic</li>
+              <li>Test-driven development</li>
+              <li>API Design & Integration</li>
+            </ul>
+          </div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🏗️</span>
+          <div class="skill-title">Building</div>
+          <div class="skill-desc">
+            <ul>
+              <li>Level & map design (Roblox, Unity, Minecraft)</li>
+              <li>Structured workflows & asset management</li>
+              <li>Performance & gameplay optimization</li>
+              <li>3D Modeling (Blender, Roblox Studio)</li>
+              <li>Procedural generation</li>
+            </ul>
+          </div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🎨</span>
+          <div class="skill-title">UI/UX & GUI Design</div>
+          <div class="skill-desc">
+            <ul>
+              <li>Modern, responsive design</li>
+              <li>Figma, Photoshop, Roblox GUI</li>
+              <li>Usability testing & prototyping</li>
+              <li>Design systems & branding</li>
+              <li>Accessibility (WCAG)</li>
+              <li>Microinteractions</li>
+            </ul>
+          </div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🚀</span>
+          <div class="skill-title">Other Strengths</div>
+          <div class="skill-desc">
+            <ul>
+              <li>Teamwork & project management</li>
+              <li>Documentation & tutorials</li>
+              <li>Agile methods & versioning (Git)</li>
+              <li>Community moderation & support</li>
+              <li>Public speaking & workshops</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- PROJECTS -->
+    <section id="projects" style="animation-delay:0.6s;">
+      <h2>Featured Projects</h2>
+      <div class="projects-list">
+        <div class="project-card">
+          <div class="project-title">Sealand Armed Forces</div>
+          <div class="project-desc">
+            A Roblox military simulation game where I led scripting and UI/UX. Developed advanced systems for team management, custom GUIs, and immersive gameplay mechanics.
+            <ul>
+              <li>Role: Lead Scripter & UI Designer</li>
+              <li>Key Features: Team system, custom HUD, rank management, live events</li>
+              <li>Result: 50k+ plays, 4.8/5 rating</li>
+            </ul>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Roblox</span>
+            <span class="tag">Lua</span>
+            <span class="tag">UI/UX</span>
+            <span class="tag">Game Design</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Game Page</a>
+            <a href="#" class="project-link">Source Code</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">Guess the Logo</div>
+          <div class="project-desc">
+            A game challenging players to recognize brands. I designed the UI, coded the core logic, and implemented smooth transitions and accessibility features.
+            <ul>
+              <li>Role: Fullstack Developer</li>
+              <li>Stack: JavaScript, HTML5, CSS3</li>
+              <li>Accessibility: Keyboard navigation, colorblind mode</li>
+            </ul>
+          </div>
+          <div class="project-tags">
+            <span class="tag">UI/UX</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Game Logic</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Play Online</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">Critical Tower Defense</div>
+          <div class="project-desc">
+            A strategic tower defense game with custom scripting for enemy AI, level progression, and a modular UI system. My role included scripting, building, and UX optimization.
+            <ul>
+              <li>Role: Game Developer</li>
+              <li>Features: Modular UI, scalable difficulty, analytics integration</li>
+            </ul>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Roblox</span>
+            <span class="tag">Lua</span>
+            <span class="tag">Game Dev</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Game Info</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">UI/UX Dashboard Template</div>
+          <div class="project-desc">
+            A modern, responsive dashboard template focused on usability and clean design. Ideal for web apps and game GUIs.
+            <ul>
+              <li>Role: UI/UX Designer</li>
+              <li>Tools: Figma, HTML/CSS</li>
+              <li>Features: Theme switcher, modular components</li>
+            </ul>
+          </div>
+          <div class="project-tags">
+            <span class="tag">UI/UX</span>
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">Figma</span>
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">Figma</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" style="animation-delay:0.7s;">
+      <h2>Testimonials</h2>
+      <div class="testimonial-list">
+        <div class="testimonial-card">
+          <p>"Toxic's UI/UX work is outstanding. Our users love the new interface!"</p>
+          <div style="margin-top:12px;font-weight:700;color:var(--primary);">– Alex, Game Studio Lead</div>
+        </div>
+        <div class="testimonial-card">
+          <p>"Professional, creative, and reliable. The scripting solutions saved us weeks of work."</p>
+          <div style="margin-top:12px;font-weight:700;color:var(--primary);">– Jamie, Project Manager</div>
+        </div>
+        <div class="testimonial-card">
+          <p>"The dashboard template is the best I've seen – clean, flexible, and easy to use."</p>
+          <div style="margin-top:12px;font-weight:700;color:var(--primary);">– Morgan, Web App Founder</div>
+        </div>
+      </div>
+    </section>
+    <!-- BLOG -->
+    <section id="blog" style="animation-delay:0.8s;">
+      <h2>Blog & Insights</h2>
+      <div class="blog-list">
+        <div class="blog-card">
+          <div class="blog-title">Designing Accessible Game UIs</div>
+          <div class="blog-desc">Barrierefreiheit ist kein Extra, sondern Standard. In diesem Beitrag erkläre ich, wie ich UI/UX für alle Nutzer zugänglich mache.</div>
+          <div class="blog-tags"><span class="tag">UI/UX</span><span class="tag">Accessibility</span></div>
+          <div class="blog-links"><a href="#" class="blog-link">Read More</a></div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-title">Scripting Patterns for Roblox</div>
+          <div class="blog-desc">Effiziente und wartbare Skripte sind der Schlüssel zu großen Projekten. Hier teile ich Best Practices und Design Patterns.</div>
+          <div class="blog-tags"><span class="tag">Roblox</span><span class="tag">Lua</span></div>
+          <div class="blog-links"><a href="#" class="blog-link">Read More</a></div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-title">Prototyping with Figma</div>
+          <div class="blog-desc">Von der Idee zum Prototypen in wenigen Stunden – wie ich Figma für schnelle Iterationen im UI-Design nutze.</div>
+          <div class="blog-tags"><span class="tag">Figma</span><span class="tag">Prototyping</span></div>
+          <div class="blog-links"><a href="#" class="blog-link">Read More</a></div>
+        </div>
+      </div>
+    </section>
+    <!-- SERVICES -->
+    <section id="services" style="animation-delay:0.9s;">
+      <h2>Services</h2>
+      <div class="service-list">
+        <div class="service-card">
+          <span class="service-icon">🛠️</span>
+          <div class="service-title">Custom Scripting</div>
+          <div class="service-desc">From game mechanics to automation – I deliver robust, scalable scripts tailored to your needs.</div>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🎮</span>
+          <div class="service-title">Game Building</div>
+          <div class="service-desc">Level design, asset integration, and gameplay balancing for immersive experiences.</div>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🖌️</span>
+          <div class="service-title">UI/UX Consulting</div>
+          <div class="service-desc">Analysis, prototyping, and redesign of your interfaces for better usability and engagement.</div>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">📚</span>
+          <div class="service-title">Workshops & Tutorials</div>
+          <div class="service-desc">Live workshops, documentation, and custom learning materials for your team or community.</div>
+        </div>
+      </div>
+    </section>
+    <!-- AWARDS -->
+    <section id="awards" style="animation-delay:1s;">
+      <h2>Awards & Certifications</h2>
+      <div class="awards-list">
+        <div class="award-card">
+          <span class="award-icon">🏆</span>
+          <div class="award-title">Best Game UI 2024</div>
+          <div class="award-desc">Awarded by Roblox Creators Network for “Sealand Armed Forces”</div>
+        </div>
+        <div class="award-card">
+          <span class="award-icon">🥇</span>
+          <div class="award-title">Certified UX Specialist</div>
+          <div class="award-desc">UX Certification, Interaction Design Foundation, 2023</div>
+        </div>
+        <div class="award-card">
+          <span class="award-icon">🎖️</span>
+          <div class="award-title">Top 10 Indie Games</div>
+          <div class="award-desc">Critical Tower Defense featured in Indie Game Magazine, 2025</div>
+        </div>
+      </div>
+    </section>
+    <!-- TIMELINE -->
+    <section id="timeline" style="animation-delay:1.1s;">
+      <h2>My Journey</h2>
+      <div class="timeline">
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2022 – First Steps</div>
+          <div class="timeline-date">Python, HTML/CSS</div>
+          <div class="timeline-desc">Learning the basics of scripting and web development.</div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2023 – Roblox Scripting Beginnings</div>
+          <div class="timeline-date">Roblox Studio</div>
+          <div class="timeline-desc">First scripts, custom minigames, and early GUI design experiments.</div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2024 – Building & Game Development</div>
+          <div class="timeline-date">Roblox, Unity</div>
+          <div class="timeline-desc">First community projects, team collaboration, and asset pipelines.</div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">2025 – UI/UX Specialization</div>
+          <div class="timeline-date">Figma, Web, Roblox</div>
+          <div class="timeline-desc">Led scripting and design for several games.</div>
+        </div>
+      </div>
+    </section>
+    <!-- FAQ -->
+    <section id="faq" style="animation-delay:1.2s;">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <div class="faq-card">
+          <div class="faq-question">Which platforms do you develop for?</div>
+          <div class="faq-answer">Primarily Roblox, web (HTML/CSS/JS), and Unity. I also create tools and dashboards for internal use.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-question">Do you offer custom commissions?</div>
+          <div class="faq-answer">Yes! I accept commissions for scripting, UI/UX, and game building. Contact me for a quote.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-question">Can you help with team training?</div>
+          <div class="faq-answer">Absolutely – I offer workshops, live sessions, and documentation tailored to your team's needs.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-question">What is your process?</div>
+          <div class="faq-answer">I start with a requirements analysis, then prototype, iterate with feedback, and deliver tested, documented results.</div>
+        </div>
+      </div>
+    </section>
+    <!-- CONTACT -->
+    <section id="contact" style="animation-delay:1.3s;">
+      <h2>Contact</h2>
+      <form class="contact-form" autocomplete="off" onsubmit="return contactSubmit(event)">
+        <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name">
+        <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email">
+        <textarea name="message" rows="5" placeholder="Your Message..." required aria-label="Your Message"></textarea>
+        <button type="submit" class="btn">Send</button>
+      </form>
+      <div id="contact-message" style="text-align:center;margin-top:8px;"></div>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 Toxic. All rights reserved.
+    <div class="footer-nav">
+      <a href="mailto:contact@Toxic.dev">contact@Toxic.dev</a>
+      <a href="#">Imprint</a>
+      <a href="#">Privacy</a>
+      <a href="#">Sitemap</a>
+    </div>
+  </footer>
+  <script>
+    // Animate sections on load/intersection
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('section');
+      sections.forEach((section, i) => {
+        setTimeout(() => section.classList.add('visible'), 200 + i * 200);
+      });
+    });
+
+    // Theme toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+      themeBtn.textContent = document.body.classList.contains('light-theme') ? '🌞' : '🌙';
+    });
+    // Load theme
+    window.addEventListener('DOMContentLoaded', () => {
+      if(localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-theme');
+        themeBtn.textContent = '🌞';
+      }
+    });
+
+    // Newsletter signup
+    function newsletterSignup(e) {
+      e.preventDefault();
+      document.getElementById('newsletter-message').textContent = 'Thank you for subscribing!';
+      setTimeout(()=>{document.getElementById('newsletter-message').textContent='';}, 4000);
+      e.target.reset();
+    }
+
+    // Contact form
+    function contactSubmit(e) {
+      e.preventDefault();
+      document.getElementById('contact-message').textContent = 'Thank you for your message!';
+      setTimeout(()=>{document.getElementById('contact-message').textContent='';}, 4000);
+      e.target.reset();
+      return false;
+    }
+  </script>
+</body>
+</html>
